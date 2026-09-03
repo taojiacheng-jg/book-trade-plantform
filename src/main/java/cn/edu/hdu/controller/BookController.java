@@ -15,9 +15,9 @@ public class BookController {
     private BookService bookService;
 
     @PostMapping("/publish")
-    public Result publishBook(@RequestPart("book") Book book,
-                              @RequestPart(value = "coverImage", required = false) MultipartFile coverImage) {
-        book.setSellerId(2);
+    public Result publishBook(@ModelAttribute Book book,
+                              @RequestParam(value = "coverImage", required = false) MultipartFile coverImage) {
+        book.setSellerId(2);   // 临时测试：固定卖家为张三；接入登录会话后请删除
         return bookService.publishBook(book, coverImage);
     }
 }

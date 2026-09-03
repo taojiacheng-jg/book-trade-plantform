@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `user` (
     `credit_score` DECIMAL(3,2) DEFAULT 5.00 COMMENT '信用分（1.00~5.00，保留两位小数）',
     `status` VARCHAR(20) DEFAULT 'normal' COMMENT '状态：normal正常 / banned封禁',
     `role` VARCHAR(20) DEFAULT 'USER' COMMENT '角色：USER普通用户 / ADMIN管理员',
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
     PRIMARY KEY (`user_id`),
     UNIQUE KEY `uk_username` (`username`) COMMENT '用户名唯一索引，加速登录查询'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户表';
@@ -38,7 +38,7 @@ CREATE TABLE IF NOT EXISTS `course` (
     `course_name` VARCHAR(100) NOT NULL COMMENT '课程名称（如：数据结构与算法）',
     `course_code` VARCHAR(50) DEFAULT NULL COMMENT '课程编号（如：CS101）',
     `semester` VARCHAR(30) DEFAULT NULL COMMENT '学期（如：2025-2026-1）',
-    `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '录入时间',
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '录入时间',
     PRIMARY KEY (`course_id`),
     KEY `idx_course_name` (`course_name`) COMMENT '课程名称索引，加速搜索'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='课程表';
@@ -55,13 +55,12 @@ CREATE TABLE IF NOT EXISTS `book` (
     `condition_desc` VARCHAR(255) DEFAULT NULL COMMENT '成色描述（如：八成新，有笔记）',
     `cover_img_path` VARCHAR(255) DEFAULT NULL COMMENT '封面图片相对路径（如 /upload/books/xxx.jpg）',
     `status` VARCHAR(20) DEFAULT '在售' COMMENT '状态：在售/已预定/已售出/已下架',
-    `publish_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
+    `publish_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '发布时间',
     PRIMARY KEY (`book_id`),
     KEY `idx_seller_id` (`seller_id`),
     KEY `idx_course_id` (`course_id`),
     KEY `idx_status` (`status`),
     KEY `idx_selling_price` (`selling_price`) COMMENT '价格区间查询索引',
-    FULLTEXT KEY `ft_title` (`title`) COMMENT '书名全文索引（可选，依赖MySQL版本）',
     CONSTRAINT `fk_book_seller` FOREIGN KEY (`seller_id`) REFERENCES `user` (`user_id`) ON DELETE RESTRICT,
     CONSTRAINT `fk_book_course` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='书籍表';
@@ -73,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `order` (
     `seller_id` INT NOT NULL COMMENT '卖家ID（外键→user）',
     `total_amount` DECIMAL(10,2) NOT NULL COMMENT '订单总金额（由order_item汇总得出，快照存储）',
     `status` VARCHAR(20) DEFAULT '待付款' COMMENT '状态：待付款/已付款/已完成/已取消',
-    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '下单时间',
+    `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '下单时间',
     `pay_time` DATETIME DEFAULT NULL COMMENT '付款时间（模拟付款时写入）',
     PRIMARY KEY (`order_id`),
     KEY `idx_buyer_id` (`buyer_id`),
@@ -106,7 +105,7 @@ CREATE TABLE IF NOT EXISTS `message` (
     `book_id` INT DEFAULT NULL COMMENT '关联书籍ID（外键→book，可空）',
     `parent_msg_id` INT DEFAULT NULL COMMENT '父消息ID（外键→message，用于回复线程）',
     `content` TEXT NOT NULL COMMENT '消息正文',
-    `send_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
+    `send_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '发送时间',
     `is_read` TINYINT(1) DEFAULT 0 COMMENT '是否已读：0未读 / 1已读',
     PRIMARY KEY (`msg_id`),
     KEY `idx_from_user_id` (`from_user_id`),
@@ -126,7 +125,7 @@ CREATE TABLE IF NOT EXISTS `evaluation` (
     `target_user_id` INT NOT NULL COMMENT '被评价人（卖家）ID（外键→user）',
     `score` TINYINT NOT NULL COMMENT '评分（1~5分）',
     `comment` VARCHAR(255) DEFAULT NULL COMMENT '评语文字',
-    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '评价时间',
+    `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '评价时间',
     PRIMARY KEY (`eval_id`),
     UNIQUE KEY `uk_order_id` (`order_id`) COMMENT '一笔订单只能评价一次',
     KEY `idx_target_user_id` (`target_user_id`) COMMENT '加速查询某卖家的所有评价',
@@ -140,7 +139,7 @@ CREATE TABLE IF NOT EXISTS `favorite` (
     `fav_id` INT NOT NULL AUTO_INCREMENT COMMENT '收藏记录ID',
     `user_id` INT NOT NULL COMMENT '用户ID（外键→user）',
     `book_id` INT NOT NULL COMMENT '书籍ID（外键→book）',
-    `create_time` DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT '收藏时间',
+    `create_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '收藏时间',
     PRIMARY KEY (`fav_id`),
     UNIQUE KEY `uk_user_book` (`user_id`, `book_id`) COMMENT '唯一组合索引，防止重复收藏',
     KEY `idx_book_id` (`book_id`),
