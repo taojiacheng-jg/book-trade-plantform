@@ -1,0 +1,16 @@
+cn\edu\hdu\mapper\UserMapper.class
+cn\edu\hdu\service\UserService.class
+cn\edu\hdu\pojo\Message.class
+cn\edu\hdu\pojo\OrderItem.class
+cn\edu\hdu\pojo\Admin.class
+cn\edu\hdu\pojo\Book.class
+cn\edu\hdu\service\impl\UserServiceImpl.class
+cn\edu\hdu\BookTradingPlatformApplication.class
+cn\edu\hdu\pojo\Course.class
+cn\edu\hdu\pojo\Favorite.class
+cn\edu\hdu\common\ResultCodeEnum.class
+cn\edu\hdu\pojo\User.class
+cn\edu\hdu\common\Result.class
+cn\edu\hdu\pojo\Evaluation.class
+cn\edu\hdu\controller\UserController.class
+cn\edu\hdu\pojo\Order.class
