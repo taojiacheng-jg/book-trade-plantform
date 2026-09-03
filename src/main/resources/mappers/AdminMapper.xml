@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.hdu.mapper.AdminMapper">
+
+    <!-- 今日交易总额（已完成订单） -->
+    <select id="sumTodayCompletedAmount" resultType="java.math.BigDecimal">
+        SELECT IFNULL(SUM(total_amount), 0)
+        FROM `order`
+        WHERE status = '已完成' AND DATE(create_time) = CURDATE()
+    </select>
+
+    <!-- 总订单量 -->
+    <select id="countAllOrders" resultType="int">
+        SELECT COUNT(*) FROM `order`
+    </select>
+
+    <!-- 热门教材 TOP 5 -->
+    <select id="hotBooks" resultType="map">
+        SELECT b.title AS title, COUNT(oi.book_id) AS cnt
+        FROM order_item oi
+        JOIN book b ON oi.book_id = b.book_id
+        GROUP BY b.book_id, b.title
+        ORDER BY cnt DESC
+        LIMIT 5
+    </select>
+
+    <!-- 每月订单趋势（近6个月） -->
+    <select id="monthlyTrend" resultType="map">
+        SELECT DATE_FORMAT(create_time, '%Y-%m') AS month, COUNT(*) AS cnt
+        FROM `order`
+        GROUP BY DATE_FORMAT(create_time, '%Y-%m')
+        ORDER BY month DESC
+        LIMIT 6
+    </select>
+
+</mapper>
