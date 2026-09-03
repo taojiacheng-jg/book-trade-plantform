@@ -2,11 +2,15 @@ E:\大学作业\信息系统综合课程设计\book-trading-platform\book-tradin
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\common\Result.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\common\ResultCodeEnum.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\config\WebMvcConfig.java
+E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\controller\AdminBookController.java
+E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\controller\AdminStatController.java
+E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\controller\AdminUserController.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\controller\BookController.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\controller\EvaluationController.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\controller\MessageController.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\controller\OrderController.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\controller\UserController.java
+E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\mapper\AdminMapper.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\mapper\BookMapper.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\mapper\EvaluationMapper.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\mapper\MessageMapper.java

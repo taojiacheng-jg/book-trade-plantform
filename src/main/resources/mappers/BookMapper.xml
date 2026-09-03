@@ -71,4 +71,54 @@
         UPDATE book SET status = #{status} WHERE book_id = #{bookId}
     </update>
 
+    <select id="findCourseIdsByBuyer" resultType="int">
+        SELECT DISTINCT b.course_id
+        FROM `order` o
+        JOIN order_item oi ON o.order_id = oi.order_id
+        JOIN book b ON oi.book_id = b.book_id
+        WHERE o.buyer_id = #{buyerId} AND o.status = '已完成' AND b.course_id IS NOT NULL
+    </select>
+
+    <select id="recommendBooksByCourseIds" resultType="Book">
+        SELECT book_id, seller_id, course_id, title, isbn, original_price, selling_price,
+               condition_desc, cover_img_path, status, publish_time
+        FROM book
+        WHERE status = '在售'
+          AND course_id IN
+        <foreach collection="courseIds" item="cid" open="(" separator="," close=")">
+            #{cid}
+        </foreach>
+        ORDER BY publish_time DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findLatestOnSale" resultType="Book">
+        SELECT book_id, seller_id, course_id, title, isbn, original_price, selling_price,
+               condition_desc, cover_img_path, status, publish_time
+        FROM book
+        WHERE status = '在售'
+        ORDER BY publish_time DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="findByIsbn" resultType="Book">
+        SELECT book_id, seller_id, course_id, title, isbn, original_price, selling_price,
+               condition_desc, cover_img_path, status, publish_time
+        FROM book WHERE isbn = #{isbn}
+    </select>
+
+    <select id="findAllBooks" resultType="Book">
+        SELECT book_id, seller_id, course_id, title, isbn, original_price, selling_price,
+               condition_desc, cover_img_path, status, publish_time
+        FROM book ORDER BY publish_time DESC
+    </select>
+
+    <update id="forceOffShelf">
+        UPDATE book SET status = '已下架' WHERE book_id = #{bookId}
+    </update>
+
+    <update id="offShelfBySeller">
+        UPDATE book SET status = '已下架' WHERE seller_id = #{sellerId} AND status = '在售'
+    </update>
+
 </mapper>

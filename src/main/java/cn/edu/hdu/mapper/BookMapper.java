@@ -29,4 +29,18 @@ public interface BookMapper {
     int lockBookForOrder(@Param("bookId") Integer bookId, @Param("status") String status);
 
     int updateBookStatus(@Param("bookId") Integer bookId, @Param("status") String status);
+
+    List<Integer> findCourseIdsByBuyer(Integer buyerId);
+
+    List<Book> recommendBooksByCourseIds(@Param("courseIds") List<Integer> courseIds, @Param("limit") int limit);
+
+    List<Book> findLatestOnSale(@Param("limit") int limit);
+
+    Book findByIsbn(String isbn);
+
+    List<Book> findAllBooks();
+
+    int forceOffShelf(Integer bookId);
+
+    int offShelfBySeller(@Param("sellerId") Integer sellerId);
 }

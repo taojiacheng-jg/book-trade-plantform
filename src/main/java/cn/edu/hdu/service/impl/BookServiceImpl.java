@@ -11,6 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -73,5 +75,54 @@ public class BookServiceImpl implements BookService {
         data.put("pageNum", page);
         data.put("pageSize", size);
         return Result.success(data);
+    }
+
+    @Override
+    public Result getRecommendBooks(Integer userId) {
+        if (userId == null || userId < 1) {
+            return Result.success(java.util.Collections.emptyList());
+        }
+        List<Integer> courseIds = bookMapper.findCourseIdsByBuyer(userId);
+        List<Book> list;
+        if (courseIds == null || courseIds.isEmpty()) {
+            // 无历史购买 → 推荐最新发布的 10 本在售书
+            list = bookMapper.findLatestOnSale(10);
+        } else {
+            list = bookMapper.recommendBooksByCourseIds(courseIds, 10);
+        }
+        return Result.success(list);
+    }
+
+    @Override
+    public Result getPriceReference(String isbn) {
+        // 模拟方案：按 ISBN 查书的原价，返回"新书参考价" = 原价 * 1.2（约上浮20%）
+        // 实际项目可替换为调用外部API/爬虫（如豆瓣、当当）获取新书实时价，需处理跨域与反爬
+        double ref;
+        Book book = bookMapper.findByIsbn(isbn);
+        if (book != null && book.getOriginalPrice() != null) {
+            ref = book.getOriginalPrice().doubleValue() * 1.2;
+        } else {
+            // 未查到书或无语价时给一个模拟默认参考价
+            ref = 59.00;
+        }
+        BigDecimal referencePrice = BigDecimal.valueOf(ref).setScale(2, RoundingMode.HALF_UP);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("referencePrice", referencePrice);
+        return Result.success(data);
+    }
+
+    @Override
+    public Result listAllBooks() {
+        return Result.success(bookMapper.findAllBooks());
+    }
+
+    @Override
+    public Result forceOffShelf(Integer bookId) {
+        int rows = bookMapper.forceOffShelf(bookId);
+        if (rows > 0) {
+            return Result.success();
+        }
+        return Result.error(cn.edu.hdu.utils.ResultCodeEnum.BOOK_NOT_FOUND);
     }
 }

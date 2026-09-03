@@ -30,4 +30,18 @@
         WHERE user_id = #{userId}
     </update>
 
+    <select id="findAllUsers" resultMap="UserResultMap">
+        SELECT * FROM user ORDER BY user_id
+    </select>
+
+    <update id="updateUserStatus">
+        UPDATE user
+        SET status = #{status}
+        WHERE user_id = #{userId}
+    </update>
+
+    <select id="findUserById" resultMap="UserResultMap">
+        SELECT * FROM user WHERE user_id = #{userId}
+    </select>
+
 </mapper>

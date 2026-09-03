@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
@@ -12,4 +13,10 @@ public interface UserMapper {
     int insertUser(User user);
 
     int updateCreditScore(@Param("userId") Integer userId, @Param("creditScore") BigDecimal creditScore);
+
+    List<User> findAllUsers();
+
+    int updateUserStatus(@Param("userId") Integer userId, @Param("status") String status);
+
+    User findUserById(Integer userId);
 }

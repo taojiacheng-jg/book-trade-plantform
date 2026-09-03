@@ -31,4 +31,14 @@ public class BookController {
                          @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         return bookService.searchBooks(keyword, courseId, minPrice, maxPrice, status, pageNum, pageSize);
     }
+
+    @GetMapping("/recommend")
+    public Result recommend(@RequestParam Integer userId) {
+        return bookService.getRecommendBooks(userId);
+    }
+
+    @GetMapping("/priceRef")
+    public Result priceRef(@RequestParam String isbn) {
+        return bookService.getPriceReference(isbn);
+    }
 }

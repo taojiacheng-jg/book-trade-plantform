@@ -18,7 +18,9 @@ public enum ResultCodeEnum {
     ORDER_STATUS_ERROR(509, "订单状态不允许该操作"),
     ORDER_CREATE_FAIL(510, "下单失败"),
     ORDER_PAY_FAIL(511, "付款失败"),
-    ORDER_CANCEL_FAIL(512, "取消失败");
+    ORDER_CANCEL_FAIL(512, "取消失败"),
+    USER_BANNED(513, "账号已被封禁"),
+    USER_NOT_FOUND(514, "用户不存在");
 
     private final Integer code;
     private final String message;
