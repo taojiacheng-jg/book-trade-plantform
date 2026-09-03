@@ -3,8 +3,12 @@ E:\大学作业\信息系统综合课程设计\book-trading-platform\book-tradin
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\common\ResultCodeEnum.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\config\WebMvcConfig.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\controller\BookController.java
+E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\controller\OrderController.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\controller\UserController.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\mapper\BookMapper.java
+E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\mapper\MessageMapper.java
+E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\mapper\OrderItemMapper.java
+E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\mapper\OrderMapper.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\mapper\UserMapper.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\pojo\Admin.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\pojo\Book.java
@@ -17,7 +21,9 @@ E:\大学作业\信息系统综合课程设计\book-trading-platform\book-tradin
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\pojo\User.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\service\BookService.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\service\impl\BookServiceImpl.java
+E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\service\impl\OrderServiceImpl.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\service\impl\UserServiceImpl.java
+E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\service\OrderService.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\service\UserService.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\utils\Result.java
 E:\大学作业\信息系统综合课程设计\book-trading-platform\book-trading-platform\src\main\java\cn\edu\hdu\utils\ResultCodeEnum.java

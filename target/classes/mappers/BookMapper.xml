@@ -10,4 +10,65 @@
                 #{conditionDesc}, #{coverImgPath}, #{status})
     </insert>
 
+    <select id="searchBooks" resultType="Book">
+        SELECT book_id, seller_id, course_id, title, isbn, original_price, selling_price,
+               condition_desc, cover_img_path, status, publish_time
+        FROM book
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND title LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="courseId != null">
+                AND course_id = #{courseId}
+            </if>
+            <if test="minPrice != null">
+                AND selling_price &gt;= #{minPrice}
+            </if>
+            <if test="maxPrice != null">
+                AND selling_price &lt;= #{maxPrice}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+        ORDER BY publish_time DESC
+        LIMIT #{offset}, #{limit}
+    </select>
+
+    <select id="countSearchBooks" resultType="int">
+        SELECT COUNT(*)
+        FROM book
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND title LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="courseId != null">
+                AND course_id = #{courseId}
+            </if>
+            <if test="minPrice != null">
+                AND selling_price &gt;= #{minPrice}
+            </if>
+            <if test="maxPrice != null">
+                AND selling_price &lt;= #{maxPrice}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="findBookById" resultType="Book">
+        SELECT book_id, seller_id, course_id, title, isbn, original_price, selling_price,
+               condition_desc, cover_img_path, status, publish_time
+        FROM book WHERE book_id = #{bookId}
+    </select>
+
+    <update id="lockBookForOrder">
+        UPDATE book SET status = '已预定' WHERE book_id = #{bookId} AND status = #{status}
+    </update>
+
+    <update id="updateBookStatus">
+        UPDATE book SET status = #{status} WHERE book_id = #{bookId}
+    </update>
+
 </mapper>

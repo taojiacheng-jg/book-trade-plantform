@@ -17,7 +17,18 @@ public class BookController {
     @PostMapping("/publish")
     public Result publishBook(@ModelAttribute Book book,
                               @RequestParam(value = "coverImage", required = false) MultipartFile coverImage) {
-        book.setSellerId(2);   // 临时测试：固定卖家为张三；接入登录会话后请删除
+        // 卖家ID来自请求参数 sellerId；后续可改为从登录会话取当前用户
         return bookService.publishBook(book, coverImage);
+    }
+
+    @GetMapping("/search")
+    public Result search(@RequestParam(value = "keyword", required = false) String keyword,
+                         @RequestParam(value = "courseId", required = false) Integer courseId,
+                         @RequestParam(value = "minPrice", required = false) Double minPrice,
+                         @RequestParam(value = "maxPrice", required = false) Double maxPrice,
+                         @RequestParam(value = "status", required = false) String status,
+                         @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum,
+                         @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
+        return bookService.searchBooks(keyword, courseId, minPrice, maxPrice, status, pageNum, pageSize);
     }
 }

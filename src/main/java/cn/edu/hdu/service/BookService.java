@@ -6,4 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface BookService {
     Result publishBook(Book book, MultipartFile coverImage);
+
+    Result searchBooks(String keyword, Integer courseId, Double minPrice, Double maxPrice,
+                       String status, Integer pageNum, Integer pageSize);
 }
