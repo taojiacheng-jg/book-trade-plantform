@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.hdu.mapper.OrderMapper">
+
+    <insert id="insertOrder" useGeneratedKeys="true" keyProperty="orderId">
+        INSERT INTO `order` (buyer_id, seller_id, total_amount, status)
+        VALUES (#{buyerId}, #{sellerId}, #{totalAmount}, #{status})
+    </insert>
+
+    <select id="findOrderById" resultType="Order">
+        SELECT order_id, buyer_id, seller_id, total_amount, status, create_time, pay_time
+        FROM `order`
+        WHERE order_id = #{orderId}
+    </select>
+
+    <update id="updateOrderStatus">
+        UPDATE `order`
+        SET status = #{status}
+        WHERE order_id = #{orderId}
+    </update>
+
+    <update id="updatePayTime">
+        UPDATE `order`
+        SET pay_time = NOW()
+        WHERE order_id = #{orderId}
+    </update>
+
+</mapper>
