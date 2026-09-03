@@ -4,8 +4,30 @@
 <mapper namespace="cn.edu.hdu.mapper.MessageMapper">
 
     <insert id="insertMessage" useGeneratedKeys="true" keyProperty="msgId">
-        INSERT INTO message (from_user_id, to_user_id, book_id, content, is_read)
-        VALUES (#{fromUserId}, #{toUserId}, #{bookId}, #{content}, #{isRead})
+        INSERT INTO message (from_user_id, to_user_id, book_id, content, parent_msg_id, is_read)
+        VALUES (#{fromUserId}, #{toUserId}, #{bookId}, #{content}, #{parentMsgId}, #{isRead})
     </insert>
+
+    <select id="findMessagesByUser" resultType="Message">
+        SELECT msg_id, from_user_id, to_user_id, book_id, parent_msg_id, content, send_time, is_read
+        FROM message
+        WHERE (from_user_id = #{userId} OR to_user_id = #{userId})
+          AND (#{threadId} IS NULL OR parent_msg_id = #{threadId})
+        ORDER BY send_time ASC
+    </select>
+
+    <select id="findMessageById" resultType="Message">
+        SELECT msg_id, from_user_id, to_user_id, book_id, parent_msg_id, content, send_time, is_read
+        FROM message
+        WHERE msg_id = #{msgId}
+    </select>
+
+    <select id="getConversation" resultType="Message">
+        SELECT msg_id, from_user_id, to_user_id, book_id, parent_msg_id, content, send_time, is_read
+        FROM message
+        WHERE (from_user_id = #{userId} AND to_user_id = #{otherUserId})
+           OR (from_user_id = #{otherUserId} AND to_user_id = #{userId})
+        ORDER BY send_time ASC
+    </select>
 
 </mapper>

@@ -24,4 +24,10 @@
         VALUES (#{username}, #{password}, #{email}, #{phone}, #{role})
     </insert>
 
+    <update id="updateCreditScore">
+        UPDATE user
+        SET credit_score = #{creditScore}
+        WHERE user_id = #{userId}
+    </update>
+
 </mapper>

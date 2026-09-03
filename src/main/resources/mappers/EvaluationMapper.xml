@@ -8,4 +8,28 @@
         VALUES (#{orderId}, #{evaluatorId}, #{targetUserId}, #{score}, #{comment})
     </insert>
 
+    <update id="updateEvaluation">
+        UPDATE evaluation
+        SET score = #{score}, comment = #{comment}
+        WHERE order_id = #{orderId}
+    </update>
+
+    <select id="findByOrderId" resultType="Evaluation">
+        SELECT eval_id, order_id, evaluator_id, target_user_id, score, comment, create_time
+        FROM evaluation
+        WHERE order_id = #{orderId}
+    </select>
+
+    <select id="findEvaluationsByTargetUser" resultType="Evaluation">
+        SELECT eval_id, order_id, evaluator_id, target_user_id, score, comment, create_time
+        FROM evaluation
+        WHERE target_user_id = #{targetUserId}
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="calcAvgScore" resultType="double">
+        SELECT AVG(score) FROM evaluation
+        WHERE target_user_id = #{targetUserId} AND score IS NOT NULL
+    </select>
+
 </mapper>
