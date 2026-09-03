@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.edu.hdu.mapper.CourseMapper">
+
+    <select id="findAll" resultType="Course">
+        SELECT course_id, course_name, course_code, semester, created_at
+        FROM course
+        ORDER BY course_id
+    </select>
+
+</mapper>

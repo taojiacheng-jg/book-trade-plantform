@@ -10,28 +10,32 @@
                 #{conditionDesc}, #{coverImgPath}, #{status})
     </insert>
 
-    <select id="searchBooks" resultType="Book">
-        SELECT book_id, seller_id, course_id, title, isbn, original_price, selling_price,
-               condition_desc, cover_img_path, status, publish_time
-        FROM book
+    <select id="searchBooks" resultType="BookVO">
+        SELECT b.book_id, b.seller_id, b.course_id, b.title, b.isbn, b.original_price,
+               b.selling_price, b.condition_desc, b.cover_img_path, b.status, b.publish_time,
+               u.username AS seller_name, u.credit_score AS credit_score,
+               c.course_name AS course_name
+        FROM book b
+        LEFT JOIN `user` u ON b.seller_id = u.user_id
+        LEFT JOIN course c ON b.course_id = c.course_id
         <where>
             <if test="keyword != null and keyword != ''">
-                AND title LIKE CONCAT('%', #{keyword}, '%')
+                AND b.title LIKE CONCAT('%', #{keyword}, '%')
             </if>
             <if test="courseId != null">
-                AND course_id = #{courseId}
+                AND b.course_id = #{courseId}
             </if>
             <if test="minPrice != null">
-                AND selling_price &gt;= #{minPrice}
+                AND b.selling_price &gt;= #{minPrice}
             </if>
             <if test="maxPrice != null">
-                AND selling_price &lt;= #{maxPrice}
+                AND b.selling_price &lt;= #{maxPrice}
             </if>
             <if test="status != null and status != ''">
-                AND status = #{status}
+                AND b.status = #{status}
             </if>
         </where>
-        ORDER BY publish_time DESC
+        ORDER BY b.publish_time DESC
         LIMIT #{offset}, #{limit}
     </select>
 
@@ -61,6 +65,17 @@
         SELECT book_id, seller_id, course_id, title, isbn, original_price, selling_price,
                condition_desc, cover_img_path, status, publish_time
         FROM book WHERE book_id = #{bookId}
+    </select>
+
+    <select id="findBookDetail" resultType="BookVO">
+        SELECT b.book_id, b.seller_id, b.course_id, b.title, b.isbn, b.original_price,
+               b.selling_price, b.condition_desc, b.cover_img_path, b.status, b.publish_time,
+               u.username AS seller_name, u.credit_score AS credit_score,
+               c.course_name AS course_name
+        FROM book b
+        LEFT JOIN `user` u ON b.seller_id = u.user_id
+        LEFT JOIN course c ON b.course_id = c.course_id
+        WHERE b.book_id = #{bookId}
     </select>
 
     <update id="lockBookForOrder">
@@ -107,10 +122,15 @@
         FROM book WHERE isbn = #{isbn}
     </select>
 
-    <select id="findAllBooks" resultType="Book">
-        SELECT book_id, seller_id, course_id, title, isbn, original_price, selling_price,
-               condition_desc, cover_img_path, status, publish_time
-        FROM book ORDER BY publish_time DESC
+    <select id="findAllBooks" resultType="BookVO">
+        SELECT b.book_id, b.seller_id, b.course_id, b.title, b.isbn, b.original_price,
+               b.selling_price, b.condition_desc, b.cover_img_path, b.status, b.publish_time,
+               u.username AS seller_name, u.credit_score AS credit_score,
+               c.course_name AS course_name
+        FROM book b
+        LEFT JOIN `user` u ON b.seller_id = u.user_id
+        LEFT JOIN course c ON b.course_id = c.course_id
+        ORDER BY b.publish_time DESC
     </select>
 
     <update id="forceOffShelf">

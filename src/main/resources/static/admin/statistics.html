@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据统计 - 校园二手书交易平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="/css/theme.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="index.html">📚 后台管理</a>
+        <div class="d-flex align-items-center">
+            <span class="navbar-text me-3"><i class="bi bi-person-circle"></i> <span id="displayUsername">管理员</span></span>
+            <button class="btn btn-outline-light btn-sm" onclick="logout()">退出</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link" href="index.html"><i class="bi bi-speedometer2"></i>后台首页</a>
+                <a class="nav-link" href="user-mgmt.html"><i class="bi bi-people"></i>用户管理</a>
+                <a class="nav-link" href="book-mgmt.html"><i class="bi bi-shield-exclamation"></i>商品监管</a>
+                <a class="nav-link active" href="#"><i class="bi bi-bar-chart"></i>数据统计</a>
+            </nav>
+        </div>
+
+        <div class="col-md-10 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold"><i class="bi bi-bar-chart text-primary"></i> 数据统计</h4>
+                <button class="btn btn-outline-primary btn-sm" onclick="loadStats()"><i class="bi bi-arrow-clockwise"></i> 刷新</button>
+            </div>
+
+            <!-- 关键指标 -->
+            <div class="row g-3 mb-4">
+                <div class="col-md-6">
+                    <div class="card rounded shadow-sm p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3" style="font-size:38px;"><i class="bi bi-cash-stack text-primary"></i></div>
+                            <div>
+                                <div class="text-muted small">今日交易总额</div>
+                                <div class="fs-3 fw-bold" id="todayAmount">—</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card rounded shadow-sm p-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3" style="font-size:38px;"><i class="bi bi-receipt text-primary"></i></div>
+                            <div>
+                                <div class="text-muted small">总订单量</div>
+                                <div class="fs-3 fw-bold" id="totalOrders">—</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 图表 -->
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="card rounded shadow-sm p-3">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-fire text-warning"></i> 热门教材 TOP 5</h6>
+                        <div id="hotBooksChart" style="width:100%;height:300px;"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card rounded shadow-sm p-3">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-graph-up text-primary"></i> 月度订单趋势</h6>
+                        <div id="monthlyChart" style="width:100%;height:300px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var hotChart, monthChart;
+
+    $(function () {
+        $('#displayUsername').text(sessionStorage.getItem('username') || '管理员');
+        loadStats();
+    });
+
+    function loadStats() {
+        $.get('/admin/stats', function (res) {
+            if (res.code === 200 && res.data) {
+                var d = res.data;
+                $('#todayAmount').text(d.todayAmount != null ? ('¥' + d.todayAmount) : '—');
+                $('#totalOrders').text(d.totalOrders != null ? (d.totalOrders + ' 笔') : '—');
+                renderHotBooks(d.hotBooks || []);
+                renderMonthly(d.monthlyTrend || []);
+            } else {
+                showToast(res.message || '加载数据失败', '提示');
+            }
+        }).fail(function () { showToast('加载数据失败，请稍后重试', '提示'); });
+    }
+
+    function renderHotBooks(list) {
+        var el = document.getElementById('hotBooksChart');
+        if (!el) return;
+        if (!hotChart) hotChart = echarts.init(el);
+        var names = list.map(function (x) { return x.title; });
+        var values = list.map(function (x) { return x.cnt; });
+        hotChart.setOption({
+            tooltip: { trigger: 'item', formatter: '{b}: {c} 次' },
+            grid: { left: 8, right: 20, bottom: 20, top: 10, containLabel: true },
+            xAxis: { type: 'value', splitLine: { lineStyle: { color: '#eef1f4' } } },
+            yAxis: {
+                type: 'category', data: names.reverse(), inverse: false,
+                axisLabel: { color: '#2c3e50' }
+            },
+            series: [{
+                type: 'bar', data: values.reverse(), barWidth: '55%',
+                itemStyle: { color: '#18bc9c', borderRadius: [0, 6, 6, 0] },
+                label: { show: true, position: 'right', color: '#2c3e50' }
+            }]
+        });
+    }
+
+    function renderMonthly(list) {
+        var el = document.getElementById('monthlyChart');
+        if (!el) return;
+        if (!monthChart) monthChart = echarts.init(el);
+        var months = list.map(function (x) { return x.month; }).reverse();
+        var values = list.map(function (x) { return x.cnt; }).reverse();
+        monthChart.setOption({
+            tooltip: { trigger: 'axis' },
+            grid: { left: 8, right: 20, bottom: 20, top: 20, containLabel: true },
+            xAxis: { type: 'category', data: months, axisLabel: { color: '#2c3e50' } },
+            yAxis: { type: 'value', splitLine: { lineStyle: { color: '#eef1f4' } } },
+            series: [{
+                type: 'line', data: values, smooth: true,
+                symbol: 'circle', symbolSize: 8,
+                lineStyle: { color: '#18bc9c', width: 3 },
+                itemStyle: { color: '#18bc9c' },
+                areaStyle: { color: 'rgba(24,188,156,0.15)' },
+                label: { show: true, color: '#2c3e50' }
+            }]
+        });
+    }
+
+    window.addEventListener('resize', function () {
+        if (hotChart) hotChart.resize();
+        if (monthChart) monthChart.resize();
+    });
+
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = '../login.html';
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/common.js"></script>
+
+</body>
+</html>

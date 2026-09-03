@@ -2,6 +2,7 @@ package cn.edu.hdu.service.impl;
 
 import cn.edu.hdu.mapper.BookMapper;
 import cn.edu.hdu.pojo.Book;
+import cn.edu.hdu.pojo.BookVO;
 import cn.edu.hdu.service.BookService;
 import cn.edu.hdu.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +67,7 @@ public class BookServiceImpl implements BookService {
         int size = (pageSize == null || pageSize < 1) ? 10 : pageSize;
         int offset = (page - 1) * size;
 
-        List<Book> list = bookMapper.searchBooks(keyword, courseId, minPrice, maxPrice, status, offset, size);
+        List<BookVO> list = bookMapper.searchBooks(keyword, courseId, minPrice, maxPrice, status, offset, size);
         int total = bookMapper.countSearchBooks(keyword, courseId, minPrice, maxPrice, status);
 
         Map<String, Object> data = new HashMap<>();
@@ -124,5 +125,14 @@ public class BookServiceImpl implements BookService {
             return Result.success();
         }
         return Result.error(cn.edu.hdu.utils.ResultCodeEnum.BOOK_NOT_FOUND);
+    }
+
+    @Override
+    public Result getBookDetail(Integer bookId) {
+        BookVO detail = bookMapper.findBookDetail(bookId);
+        if (detail == null) {
+            return Result.error(cn.edu.hdu.utils.ResultCodeEnum.BOOK_NOT_FOUND);
+        }
+        return Result.success(detail);
     }
 }

@@ -41,4 +41,9 @@ public class BookController {
     public Result priceRef(@RequestParam String isbn) {
         return bookService.getPriceReference(isbn);
     }
+
+    @GetMapping("/detail")
+    public Result detail(@RequestParam Integer bookId) {
+        return bookService.getBookDetail(bookId);
+    }
 }

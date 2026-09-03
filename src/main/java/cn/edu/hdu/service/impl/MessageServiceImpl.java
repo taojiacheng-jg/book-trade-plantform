@@ -40,4 +40,9 @@ public class MessageServiceImpl implements MessageService {
         List<Message> list = messageMapper.getConversation(userId, otherUserId);
         return Result.success(list);
     }
+
+    @Override
+    public Result getContacts(Integer userId) {
+        return Result.success(messageMapper.listContacts(userId));
+    }
 }

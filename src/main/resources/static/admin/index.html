@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>后台管理 - 校园二手书交易平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="/css/theme.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="index.html">📚 后台管理</a>
+        <div class="d-flex align-items-center">
+            <span class="navbar-text me-3">
+                <i class="bi bi-person-circle"></i> <span id="displayUsername">管理员</span>
+            </span>
+            <button class="btn btn-outline-light btn-sm" onclick="logout()">退出</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <!-- 左侧菜单 -->
+        <div class="col-md-2 sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link active" href="index.html"><i class="bi bi-speedometer2"></i>后台首页</a>
+                <a class="nav-link" href="user-mgmt.html"><i class="bi bi-people"></i>用户管理</a>
+                <a class="nav-link" href="book-mgmt.html"><i class="bi bi-shield-exclamation"></i>商品监管</a>
+                <a class="nav-link" href="statistics.html"><i class="bi bi-bar-chart"></i>数据统计</a>
+            </nav>
+        </div>
+
+        <!-- 主内容区 -->
+        <div class="col-md-10 main-content p-4">
+            <div class="hero-gradient p-4 mb-4 rounded">
+                <h3 class="fw-bold mb-1">欢迎，<span id="welcomeName">管理员</span>！</h3>
+                <p class="mb-0">这里是平台后台管理系统，可在左侧菜单管理用户、监管商品、查看数据。</p>
+            </div>
+
+            <!-- 平台概况 -->
+            <h6 class="fw-bold mb-3"><i class="bi bi-grid text-primary"></i> 平台概况</h6>
+            <div class="row g-3">
+                <div class="col-md-3 col-sm-6">
+                    <div class="card rounded shadow-sm p-3 card-hover">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3" style="font-size:34px;"><i class="bi bi-people text-primary"></i></div>
+                            <div>
+                                <div class="text-muted small">总用户数</div>
+                                <div class="fs-4 fw-bold" id="totalUsers">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card rounded shadow-sm p-3 card-hover">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3" style="font-size:34px;"><i class="bi bi-book text-primary"></i></div>
+                            <div>
+                                <div class="text-muted small">总书籍数</div>
+                                <div class="fs-4 fw-bold" id="totalBooks">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card rounded shadow-sm p-3 card-hover">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3" style="font-size:34px;"><i class="bi bi-receipt text-primary"></i></div>
+                            <div>
+                                <div class="text-muted small">总订单数</div>
+                                <div class="fs-4 fw-bold" id="totalOrders">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-sm-6">
+                    <div class="card rounded shadow-sm p-3 card-hover">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3" style="font-size:34px;"><i class="bi bi-cash-stack text-primary"></i></div>
+                            <div>
+                                <div class="text-muted small">今日成交金额</div>
+                                <div class="fs-4 fw-bold" id="todayAmount">--</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        var name = sessionStorage.getItem('username') || '管理员';
+        $('#displayUsername').text(name);
+        $('#welcomeName').text(name);
+        loadOverview();
+    });
+
+    function loadOverview() {
+        // 平台概况：用户数 + 书籍数 + 订单数/今日成交（由 stats 提供）
+        $.get('/admin/users', function (res) {
+            if (res.code === 200 && res.data) { $('#totalUsers').text(res.data.length + ' 人'); }
+            else { $('#totalUsers').text('--'); }
+        }).fail(function () { $('#totalUsers').text('--'); });
+
+        $.get('/admin/books', function (res) {
+            if (res.code === 200 && res.data) { $('#totalBooks').text(res.data.length + ' 本'); }
+            else { $('#totalBooks').text('--'); }
+        }).fail(function () { $('#totalBooks').text('--'); });
+
+        $.get('/admin/stats', function (res) {
+            if (res.code === 200 && res.data) {
+                if (res.data.totalOrders != null) { $('#totalOrders').text(res.data.totalOrders + ' 笔'); }
+                if (res.data.todayAmount != null) { $('#todayAmount').text('¥' + res.data.todayAmount); }
+            }
+        }).fail(function () {
+            $('#totalOrders').text('--');
+            $('#todayAmount').text('--');
+        });
+    }
+
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = '../login.html';
+    }
+</script>
+
+</body>
+</html>

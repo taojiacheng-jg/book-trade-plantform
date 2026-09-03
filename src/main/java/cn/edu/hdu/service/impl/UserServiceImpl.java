@@ -71,15 +71,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Result register(String username, String password) {
+    public Result register(String username, String password, String role) {
         User existing = userMapper.findUserByUsername(username);
         if (existing != null) {
             return Result.error(ResultCodeEnum.USER_ALREADY_EXISTS);
         }
+        String finalRole = "USER";
+        if ("ADMIN".equals(role) || "USER".equals(role)) {
+            finalRole = role;
+        }
         User user = new User();
         user.setUsername(username);
         user.setPassword(passwordEncoder.encode(password));
-        user.setRole("USER");
+        user.setRole(finalRole);
         int rows = userMapper.insertUser(user);
         if (rows > 0) {
             return Result.success();

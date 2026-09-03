@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品监管 - 校园二手书交易平台</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link href="/css/theme.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+    <style>
+        .thumb { width: 48px; height: 48px; object-fit: cover; border-radius: .4rem; background: #eee; }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="index.html">📚 后台管理</a>
+        <div class="d-flex align-items-center">
+            <span class="navbar-text me-3"><i class="bi bi-person-circle"></i> <span id="displayUsername">管理员</span></span>
+            <button class="btn btn-outline-light btn-sm" onclick="logout()">退出</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2 sidebar">
+            <nav class="nav flex-column">
+                <a class="nav-link" href="index.html"><i class="bi bi-speedometer2"></i>后台首页</a>
+                <a class="nav-link" href="user-mgmt.html"><i class="bi bi-people"></i>用户管理</a>
+                <a class="nav-link active" href="#"><i class="bi bi-shield-exclamation"></i>商品监管</a>
+                <a class="nav-link" href="statistics.html"><i class="bi bi-bar-chart"></i>数据统计</a>
+            </nav>
+        </div>
+
+        <div class="col-md-10 p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h4 class="fw-bold"><i class="bi bi-shield-exclamation text-primary"></i> 商品监管</h4>
+                <button class="btn btn-outline-primary btn-sm" onclick="loadBooks()"><i class="bi bi-arrow-clockwise"></i> 刷新</button>
+            </div>
+
+            <!-- 搜索过滤 -->
+            <div class="card rounded shadow-sm p-3 mb-3">
+                <div class="row g-2 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label">书名关键字</label>
+                        <input type="text" class="form-control" id="kwTitle" placeholder="输入书名搜索" oninput="applyFilter()">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">卖家用户名</label>
+                        <input type="text" class="form-control" id="kwSeller" placeholder="输入卖家用户名搜索" oninput="applyFilter()">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-primary" onclick="applyFilter()"><i class="bi bi-search"></i> 搜索</button>
+                        <button class="btn btn-outline-secondary ms-2" onclick="resetFilter()">重置</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card rounded shadow-sm p-3">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover align-middle mb-0">
+                        <thead><tr>
+                            <th>ID</th><th>封面</th><th>书名</th><th>卖家</th><th>售价</th><th>状态</th><th>发布时间</th><th class="text-end">操作</th>
+                        </tr></thead>
+                        <tbody id="bookList">
+                            <tr><td colspan="8" class="text-center text-muted py-4">正在加载...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var allBooks = [];
+
+    $(function () {
+        $('#displayUsername').text(sessionStorage.getItem('username') || '管理员');
+        loadBooks();
+    });
+
+    function loadBooks() {
+        $('#bookList').html('<tr><td colspan="8" class="text-center text-muted py-4">正在加载...</td></tr>');
+        $.get('/admin/books', function (res) {
+            if (res.code === 200 && res.data) {
+                allBooks = res.data;
+                render();
+            } else {
+                $('#bookList').html('<tr><td colspan="8" class="text-center text-danger py-4">' + (res.message || '加载失败') + '</td></tr>');
+            }
+        }).fail(function () {
+            $('#bookList').html('<tr><td colspan="8" class="text-center text-danger py-4">加载失败，请稍后重试</td></tr>');
+        });
+    }
+
+    function applyFilter() {
+        render();
+    }
+
+    function resetFilter() {
+        $('#kwTitle').val('');
+        $('#kwSeller').val('');
+        render();
+    }
+
+    function render() {
+        var kwTitle = $('#kwTitle').val().trim().toLowerCase();
+        var kwSeller = $('#kwSeller').val().trim().toLowerCase();
+
+        var list = allBooks.filter(function (b) {
+            var okTitle = !kwTitle || (b.title && b.title.toLowerCase().indexOf(kwTitle) >= 0);
+            var okSeller = !kwSeller || (b.sellerName && b.sellerName.toLowerCase().indexOf(kwSeller) >= 0);
+            return okTitle && okSeller;
+        });
+
+        if (list.length === 0) {
+            $('#bookList').html('<tr><td colspan="8" class="text-center text-muted py-4">没有符合条件的书籍</td></tr>');
+            return;
+        }
+
+        var html = '';
+        $.each(list, function (i, b) {
+            var cover = b.coverImgPath || 'https://via.placeholder.com/48x48?text=无';
+            var statusClass = b.status === '在售' ? 'bg-success' :
+                (b.status === '已预定' ? 'bg-warning text-dark' :
+                (b.status === '已下架' ? 'bg-danger' : 'bg-secondary'));
+            var canOff = (b.status === '在售' || b.status === '已预定');
+            var action = canOff
+                ? '<button class="btn btn-outline-danger btn-sm" onclick="offShelf(' + b.bookId + ')"><i class="bi bi-archive"></i> 强制下架</button>'
+                : '<span class="text-muted small">不可操作</span>';
+
+            html += '<tr>' +
+                '<td>' + b.bookId + '</td>' +
+                '<td><img class="thumb" src="' + cover + '" alt=""></td>' +
+                '<td>' + escapeHtml(b.title) + '</td>' +
+                '<td>' + escapeHtml(b.sellerName || ('用户#' + b.sellerId)) + '</td>' +
+                '<td class="price">¥' + b.sellingPrice + '</td>' +
+                '<td><span class="badge ' + statusClass + '">' + b.status + '</span></td>' +
+                '<td>' + formatTime(b.publishTime) + '</td>' +
+                '<td class="text-end">' + action + '</td>' +
+                '</tr>';
+        });
+        $('#bookList').html(html);
+    }
+
+    function offShelf(bookId) {
+        confirmDialog('确定强制下架该书籍吗？', '下架确认').then(function (ok) {
+            if (!ok) return;
+            $.post('/admin/offShelf', { bookId: bookId }, function (res) {
+                if (res.code === 200) { showToast('已下架该书籍', '成功'); loadBooks(); }
+                else { showToast(res.message || '操作失败', '提示'); }
+            }).fail(function () { showToast('操作失败，请稍后重试', '提示'); });
+        });
+    }
+
+    function formatTime(t) {
+        if (!t) return '';
+        var d = new Date(t);
+        var pad = function (n) { return String(n).padStart(2, '0'); };
+        return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    }
+
+    function escapeHtml(s) {
+        if (s == null) return '';
+        return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function logout() {
+        sessionStorage.clear();
+        window.location.href = '../login.html';
+    }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/common.js"></script>
+
+</body>
+</html>

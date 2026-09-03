@@ -16,4 +16,6 @@ public interface BookService {
 
     Result listAllBooks();
     Result forceOffShelf(Integer bookId);
+
+    Result getBookDetail(Integer bookId);
 }

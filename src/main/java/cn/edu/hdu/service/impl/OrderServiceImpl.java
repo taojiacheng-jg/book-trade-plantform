@@ -1,15 +1,14 @@
 package cn.edu.hdu.service.impl;
 
 import cn.edu.hdu.mapper.BookMapper;
-import cn.edu.hdu.mapper.EvaluationMapper;
 import cn.edu.hdu.mapper.MessageMapper;
 import cn.edu.hdu.mapper.OrderItemMapper;
 import cn.edu.hdu.mapper.OrderMapper;
 import cn.edu.hdu.pojo.Book;
-import cn.edu.hdu.pojo.Evaluation;
 import cn.edu.hdu.pojo.Message;
 import cn.edu.hdu.pojo.Order;
 import cn.edu.hdu.pojo.OrderItem;
+import cn.edu.hdu.pojo.OrderVO;
 import cn.edu.hdu.service.OrderService;
 import cn.edu.hdu.utils.Result;
 import cn.edu.hdu.utils.ResultCodeEnum;
@@ -34,9 +33,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private MessageMapper messageMapper;
-
-    @Autowired
-    private EvaluationMapper evaluationMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -141,13 +137,28 @@ public class OrderServiceImpl implements OrderService {
             bookMapper.updateBookStatus(item.getBookId(), "已售出");
         }
 
-        // 插入一条"待评价"记录（score、comment 暂为空，由买家后续补充）
-        Evaluation eval = new Evaluation();
-        eval.setOrderId(orderId);
-        eval.setEvaluatorId(order.getBuyerId());
-        eval.setTargetUserId(order.getSellerId());
-        evaluationMapper.insertEvaluation(eval);
-
         return Result.success();
+    }
+
+    @Override
+    public Result listOrders(Integer buyerId, Integer sellerId) {
+        Object list;
+        if (sellerId != null) {
+            list = orderMapper.listSellerOrders(sellerId);
+        } else if (buyerId != null) {
+            list = orderMapper.listBuyerOrders(buyerId);
+        } else {
+            return Result.error(ResultCodeEnum.PARAM_ERROR);
+        }
+        return Result.success(list);
+    }
+
+    @Override
+    public Result getOrderDetail(Integer orderId) {
+        OrderVO detail = orderMapper.findOrderDetail(orderId);
+        if (detail == null) {
+            return Result.error(ResultCodeEnum.ORDER_NOT_FOUND);
+        }
+        return Result.success(detail);
     }
 }

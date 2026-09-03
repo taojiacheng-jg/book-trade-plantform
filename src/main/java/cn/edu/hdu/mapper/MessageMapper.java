@@ -1,6 +1,7 @@
 package cn.edu.hdu.mapper;
 
 import cn.edu.hdu.pojo.Message;
+import cn.edu.hdu.pojo.MessageContact;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,4 +16,6 @@ public interface MessageMapper {
     Message findMessageById(Integer msgId);
 
     List<Message> getConversation(@Param("userId") Integer userId, @Param("otherUserId") Integer otherUserId);
+
+    List<MessageContact> listContacts(@Param("userId") Integer userId);
 }

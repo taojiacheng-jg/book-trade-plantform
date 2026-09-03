@@ -3,6 +3,7 @@ package cn.edu.hdu.controller;
 import cn.edu.hdu.service.OrderService;
 import cn.edu.hdu.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -35,5 +36,16 @@ public class OrderController {
     public Result confirm(@RequestParam Integer orderId,
                           @RequestParam Integer sellerId) {
         return orderService.confirmReceive(orderId, sellerId);
+    }
+
+    @GetMapping("/list")
+    public Result list(@RequestParam(value = "buyerId", required = false) Integer buyerId,
+                       @RequestParam(value = "sellerId", required = false) Integer sellerId) {
+        return orderService.listOrders(buyerId, sellerId);
+    }
+
+    @GetMapping("/detail")
+    public Result detail(@RequestParam Integer orderId) {
+        return orderService.getOrderDetail(orderId);
     }
 }

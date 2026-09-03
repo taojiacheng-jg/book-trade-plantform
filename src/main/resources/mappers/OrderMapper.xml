@@ -26,4 +26,48 @@
         WHERE order_id = #{orderId}
     </update>
 
+    <select id="listBuyerOrders" resultType="OrderVO">
+        SELECT o.order_id, o.buyer_id, o.seller_id, o.total_amount, o.status,
+               o.create_time, o.pay_time,
+               b.book_id, b.title AS book_title,
+               bu.username AS buyer_name,
+               su.username AS seller_name
+        FROM `order` o
+        LEFT JOIN order_item oi ON o.order_id = oi.order_id
+        LEFT JOIN book b ON oi.book_id = b.book_id
+        LEFT JOIN `user` bu ON o.buyer_id = bu.user_id
+        LEFT JOIN `user` su ON o.seller_id = su.user_id
+        WHERE o.buyer_id = #{buyerId}
+        ORDER BY o.create_time DESC
+    </select>
+
+    <select id="listSellerOrders" resultType="OrderVO">
+        SELECT o.order_id, o.buyer_id, o.seller_id, o.total_amount, o.status,
+               o.create_time, o.pay_time,
+               b.book_id, b.title AS book_title,
+               bu.username AS buyer_name,
+               su.username AS seller_name
+        FROM `order` o
+        LEFT JOIN order_item oi ON o.order_id = oi.order_id
+        LEFT JOIN book b ON oi.book_id = b.book_id
+        LEFT JOIN `user` bu ON o.buyer_id = bu.user_id
+        LEFT JOIN `user` su ON o.seller_id = su.user_id
+        WHERE o.seller_id = #{sellerId}
+        ORDER BY o.create_time DESC
+    </select>
+
+    <select id="findOrderDetail" resultType="OrderVO">
+        SELECT o.order_id, o.buyer_id, o.seller_id, o.total_amount, o.status,
+               o.create_time, o.pay_time,
+               b.book_id, b.title AS book_title,
+               bu.username AS buyer_name,
+               su.username AS seller_name
+        FROM `order` o
+        LEFT JOIN order_item oi ON o.order_id = oi.order_id
+        LEFT JOIN book b ON oi.book_id = b.book_id
+        LEFT JOIN `user` bu ON o.buyer_id = bu.user_id
+        LEFT JOIN `user` su ON o.seller_id = su.user_id
+        WHERE o.order_id = #{orderId}
+    </select>
+
 </mapper>

@@ -21,6 +21,7 @@ cn\edu\hdu\mapper\OrderMapper.class
 cn\edu\hdu\service\impl\OrderServiceImpl.class
 cn\edu\hdu\service\impl\UserServiceImpl.class
 cn\edu\hdu\mapper\EvaluationMapper.class
+cn\edu\hdu\pojo\BookVO.class
 cn\edu\hdu\pojo\User.class
 cn\edu\hdu\service\impl\EvaluationServiceImpl.class
 cn\edu\hdu\controller\AdminStatController.class
@@ -32,9 +33,8 @@ cn\edu\hdu\controller\UserController.class
 cn\edu\hdu\controller\OrderController.class
 cn\edu\hdu\mapper\AdminMapper.class
 cn\edu\hdu\utils\Result.class
-cn\edu\hdu\common\ResultCodeEnum.class
 cn\edu\hdu\config\WebMvcConfig.class
-cn\edu\hdu\common\Result.class
+cn\edu\hdu\pojo\MessageContact.class
 cn\edu\hdu\utils\ResultCodeEnum.class
 cn\edu\hdu\service\BookService.class
 cn\edu\hdu\service\MessageService.class

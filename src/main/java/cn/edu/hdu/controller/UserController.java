@@ -18,7 +18,9 @@ public class UserController {
     }
 
     @GetMapping("/register")
-    public Result register(@RequestParam String username, @RequestParam String password) {
-        return userService.register(username, password);
+    public Result register(@RequestParam String username,
+                           @RequestParam String password,
+                           @RequestParam(value = "role", required = false) String role) {
+        return userService.register(username, password, role);
     }
 }

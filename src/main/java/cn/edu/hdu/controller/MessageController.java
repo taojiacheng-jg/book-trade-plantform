@@ -30,4 +30,9 @@ public class MessageController {
     public Result conversation(@RequestParam Integer userId, @RequestParam Integer otherId) {
         return messageService.getConversation(userId, otherId);
     }
+
+    @GetMapping("/contacts")
+    public Result contacts(@RequestParam Integer userId) {
+        return messageService.getContacts(userId);
+    }
 }

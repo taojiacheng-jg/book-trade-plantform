@@ -9,4 +9,6 @@ public interface MessageService {
     Result replyMessage(Integer parentId, String content, Integer fromUserId, Integer toUserId);
 
     Result getConversation(Integer userId, Integer otherUserId);
+
+    Result getContacts(Integer userId);
 }

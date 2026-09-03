@@ -20,7 +20,8 @@ public enum ResultCodeEnum {
     ORDER_PAY_FAIL(511, "付款失败"),
     ORDER_CANCEL_FAIL(512, "取消失败"),
     USER_BANNED(513, "账号已被封禁"),
-    USER_NOT_FOUND(514, "用户不存在");
+    USER_NOT_FOUND(514, "用户不存在"),
+    PARAM_ERROR(515, "参数错误");
 
     private final Integer code;
     private final String message;

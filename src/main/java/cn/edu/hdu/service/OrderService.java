@@ -10,4 +10,8 @@ public interface OrderService {
     Result cancelOrder(Integer orderId);
 
     Result confirmReceive(Integer orderId, Integer sellerId);
+
+    Result listOrders(Integer buyerId, Integer sellerId);
+
+    Result getOrderDetail(Integer orderId);
 }
